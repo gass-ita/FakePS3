@@ -1,4 +1,4 @@
-GitHub Copilot: # FakePS3
+# Title: FakePS3
 
 FakePS3 is a Java-based image editor that allows users to create and manipulate images using layers. It is designed to mimic the functionality of popular image editing software like Adobe Photoshop and GIMP.
 
