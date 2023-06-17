@@ -108,7 +108,8 @@ public class Layer {
 
 
     public void setPixel(int x, int y, int r, int g, int b, int a) {
-        pixels[y][x] = (a << 24) | (r << 16) | (g << 8) | b;
+        int color = (a << 24) | (r << 16) | (g << 8) | b;
+        setPixel(x, y, color);
     }
 
     public void setPixel(int x, int y, Color color) {
@@ -116,7 +117,9 @@ public class Layer {
     }
     
     public void setPixel(int x, int y, int color) {
-        pixels[y][x] = color;    
+        if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+            this.pixels[y][x] = color;
+        }
     }
 
     public void setPixel(int x, int y, int[] color) {
@@ -238,7 +241,7 @@ public class Layer {
     }
 
     public void setDimension(int width, int height, boolean stretch) {
-        Layer.setDimension(this, width, height, stretch);
+       Layer.setDimension(this, width, height, stretch);
     }
 
 

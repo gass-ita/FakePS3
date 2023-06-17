@@ -3,16 +3,24 @@ package Layer;
 import java.util.ArrayList;
 import java.awt.image.*;
 
+import Tools.Tool;
+
+
 
 public class LayerManager {
     /* DEFAULT_VARIABLES */
     static final int DEFAULT_WIDTH = 800;
     static final int DEFAULT_HEIGHT = 800;
+    static final int DEFAULT_ACTIVE_COLOR = 0xffffffff;
+    static final Tool DEFAULT_ACTIVE_TOOL = new Tools.BetterBrush();
 
     /* VARIABLES */
-    public ArrayList<Layer> LayerList = new ArrayList<>();
+    private ArrayList<Layer> LayerList = new ArrayList<>();
+    private Layer activeLayer;
     private BufferedImage image;
     private int width, height;
+    private int activeColor = DEFAULT_ACTIVE_COLOR;
+    private Tool activeTool = DEFAULT_ACTIVE_TOOL;
 
     /* CONSTRUCTORS */
 
@@ -30,7 +38,11 @@ public class LayerManager {
     /* METHODS */
 
     public void createNewLayer() {
-        LayerList.add(new Layer(width, height));
+        Layer layer = new Layer(width, height);
+        if (activeLayer == null) {
+            activeLayer = layer;
+        }
+        LayerList.add(layer);
     }
 
     public void addLayer(Layer layer) {
@@ -38,10 +50,22 @@ public class LayerManager {
     }
 
     public void addLayer(Layer layer, boolean resize) {
-        LayerList.add(Layer.setDimension(layer.copy(), width, height, resize));
+        Layer newLayer = Layer.setDimension(layer.copy(), width, height, resize);
+        if (activeLayer == null) {
+            activeLayer = newLayer;
+        }
+        LayerList.add(newLayer);    
     }
 
     public void removeLayer(int index) {
+        if (index < 0 || index >= LayerList.size()) {
+            return;
+        }
+
+        if (activeLayer == LayerList.get(index)) {
+            activeLayer = null;
+        }
+
         LayerList.remove(index);
     }
 
@@ -113,11 +137,10 @@ public class LayerManager {
         return image;
     }
 
-
-
-
-
-
+    
+    public void toolUsed(Tool tool, int x, int y){
+        tool.apply(activeLayer, activeColor, x, y);
+    }
 
 
     /* PRIVATE_METHODS */
@@ -125,7 +148,10 @@ public class LayerManager {
 
 
 
-    private int calculateColor(int f, int b) {
+   
+
+    /* STATIC_METHODS */
+    public static int calculateColor(int f, int b){
         // extract the color components from f and b
         int fa = (f >> 24) & 0xff;
         int fr = (f >> 16) & 0xff;
@@ -208,5 +234,13 @@ public class LayerManager {
         }
         this.width = width;
         this.height = height;
+    }
+
+    public Tool getActiveTool() {
+        return activeTool;
+    }
+
+    public void setActiveTool(Tool activeTool) {
+        this.activeTool = activeTool;
     }
 }

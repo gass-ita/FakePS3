@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 
 import Layer.Layer;
 import Layer.LayerManager;
+import Tools.BetterBrush;
+import Tools.Brush;
 import UI.Editor;
 
 public class App {
@@ -28,6 +30,28 @@ public class App {
         frame.setSize(1000, 1000);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        BufferedImage test_image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        //make test_image like a checkboard
+        for (int i = 0; i < test_image.getWidth(); i++) {
+            for (int j = 0; j < test_image.getHeight(); j++) {
+                if ((i + j) % 2 == 0) {
+                    test_image.setRGB(i, j, 0xffffffff);
+                } else {
+                    test_image.setRGB(i, j, 0xff000000);
+                }
+            }
+        }
+
+
+
+        BetterBrush brush = new BetterBrush();
+        brush.importBrushImage(test_image);
+        brush.setSize(100);
+        manager.toolUsed(brush, 500, 500);
+
+        Brush brush2 = new Brush();
+        manager.toolUsed(brush2, 300, 300);
 
         /* BufferedImage image_to_save = manager.exportImage();
         File outputfile = new File("saved.png");

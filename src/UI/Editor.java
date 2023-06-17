@@ -2,12 +2,11 @@ package UI;
 
 import java.awt.Color;
 import java.awt.Graphics;
-
+import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
-
 import Layer.LayerManager;
 
-public class Editor extends JPanel {
+public class Editor extends JPanel implements MouseMotionListener {
 
     static final int SOLID_BACKGROUND_STYLE = 0;
     static final int GRID_BACKGROUND_STYLE = 1;
@@ -37,6 +36,7 @@ public class Editor extends JPanel {
         width = manager.getWidth();
         height = manager.getHeight();
         setSize(width, height);
+        addMouseMotionListener(this);
     }
 
     @Override
@@ -75,5 +75,17 @@ public class Editor extends JPanel {
                 g.fillRect(i, j, backgroundGridSize, backgroundGridSize);
             }
         }
+    }
+
+    @Override
+    public void mouseDragged(java.awt.event.MouseEvent e) {
+        //TODO: avoid using toolUsed but create a dragged event on the manager to fill the voids between the mouseMoved events
+        manager.toolUsed(manager.getActiveTool(), e.getX(), e.getY());
+        repaint();
+    }
+
+    @Override
+    public void mouseMoved(java.awt.event.MouseEvent e) {
+        
     }
 }
