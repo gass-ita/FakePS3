@@ -8,15 +8,11 @@ import Layer.LayerManager;
 
 public class Editor extends JPanel implements MouseMotionListener {
 
-    static final int SOLID_BACKGROUND_STYLE = 0;
-    static final int GRID_BACKGROUND_STYLE = 1;
-    static final int TRANSPARENT_BACKGROUND_STYLE = 2;
-    static final int DEFAULT_BACKGROUND_STYLE = GRID_BACKGROUND_STYLE;
-
     
+    static final BackgroundStyle DEFAULT_BACKGROUND_STYLE = BackgroundStyle.GRID_BACKGROUND_STYLE;
     
     /* BACKGROUND_STYLE DEFAULT VARIABLES */
-    static final Color DEFAULT_BACKGROUND_COLOR = new Color(255, 255, 255, 0);
+    static final Color DEFAULT_BACKGROUND_COLOR = new Color(255, 255, 255, 255);
     static final Color DEFAULT_BACKGROUND_COLOR_2 = new Color(0, 0, 0, 255);
     static final int DEFAULT_BACKGROUND_GRID_SIZE = 10;
 
@@ -28,7 +24,7 @@ public class Editor extends JPanel implements MouseMotionListener {
 
 
     private LayerManager manager;
-    private int backgroundStyle = DEFAULT_BACKGROUND_STYLE;
+    private BackgroundStyle backgroundStyle = DEFAULT_BACKGROUND_STYLE;
     private int width, height;
 
     public Editor(LayerManager manager) {
