@@ -9,9 +9,7 @@ import java.util.ArrayList;
 
 public class Layer {
 
-    public final static int RED_CHANNEL = 0;
-    public final static int GREEN_CHANNEL = 1;
-    public final static int BLUE_CHANNEL = 2;
+    
     /* DEFAULT_VARIABLES */
     
     final static int DEFAULT_WIDTH = 800;
@@ -419,7 +417,7 @@ public class Layer {
         this.opacity = opacity;
     }
 
-    public void setChannelOpacity(int channel, double opacity){
+    public void setChannelOpacity(ColorChannel channel, double opacity){
         
         if (opacity < 0){
             opacity = 0;
@@ -442,7 +440,7 @@ public class Layer {
         }
     }
 
-    public double getChannelOpacity(int channel){
+    public double getChannelOpacity(ColorChannel channel){
         switch (channel) {
             case RED_CHANNEL:
                 return redChannel_opacity;

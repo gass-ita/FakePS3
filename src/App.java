@@ -11,14 +11,19 @@ import Layer.Layer;
 import Layer.LayerManager;
 import Tools.BetterBrush;
 import Tools.Brush;
+import Tools.Fill;
 import UI.Editor;
+import Utils.Debugger;
 
 public class App {
     public static void main(String[] args) throws Exception {
+
+        Debugger.log("Starting the app");
+
         Layer layer = new Layer();
-        BufferedImage image = ImageIO.read(new File("test.jpg"));
-        layer.importImage(image);
-        layer.setVisible(true);
+        /* BufferedImage image = ImageIO.read(new File("test.jpg")); */
+        /* layer.importImage(image); */
+        layer.setVisible(true); 
         LayerManager manager = new LayerManager(800, 800);
 
         manager.addLayer(layer);

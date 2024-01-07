@@ -21,6 +21,8 @@ public class LayerManager {
     private int width, height;
     private int activeColor = DEFAULT_ACTIVE_COLOR;
     private Tool activeTool = DEFAULT_ACTIVE_TOOL;
+    private int lastX = -1;
+    private int lastY = -1;
 
     /* CONSTRUCTORS */
 
@@ -87,9 +89,9 @@ public class LayerManager {
                 int bgColor_green = (bgColor_pixel >> 8) & 0xff;
                 int bgColor_blue = bgColor_pixel & 0xff;
                 bgColor_alpha = (int) (bgColor_alpha * bg_layer.getOpacity());
-                bgColor_red = (int) (bgColor_red * bg_layer.getChannelOpacity(Layer.RED_CHANNEL));
-                bgColor_green = (int) (bgColor_green * bg_layer.getChannelOpacity(Layer.GREEN_CHANNEL));
-                bgColor_blue = (int) (bgColor_blue * bg_layer.getChannelOpacity(Layer.BLUE_CHANNEL));
+                bgColor_red = (int) (bgColor_red * bg_layer.getChannelOpacity(ColorChannel.RED_CHANNEL));
+                bgColor_green = (int) (bgColor_green * bg_layer.getChannelOpacity(ColorChannel.GREEN_CHANNEL));
+                bgColor_blue = (int) (bgColor_blue * bg_layer.getChannelOpacity(ColorChannel.BLUE_CHANNEL));
 
                 // combine the alpha value and color value into a single pixel value
                 bgColor_pixel = (bgColor_alpha << 24) | (bgColor_pixel & 0x00ffffff);
@@ -113,9 +115,9 @@ public class LayerManager {
                     int layer_green = (layer_pixel >> 8) & 0xff;
                     int layer_blue = layer_pixel & 0xff;
                     layer_alpha = (int) (layer_alpha * layer.getOpacity());
-                    layer_red = (int) (layer_red * layer.getChannelOpacity(Layer.RED_CHANNEL));
-                    layer_green = (int) (layer_green * layer.getChannelOpacity(Layer.GREEN_CHANNEL));
-                    layer_blue = (int) (layer_blue * layer.getChannelOpacity(Layer.BLUE_CHANNEL));
+                    layer_red = (int) (layer_red * layer.getChannelOpacity(ColorChannel.RED_CHANNEL));
+                    layer_green = (int) (layer_green * layer.getChannelOpacity(ColorChannel.GREEN_CHANNEL));
+                    layer_blue = (int) (layer_blue * layer.getChannelOpacity(ColorChannel.BLUE_CHANNEL));
 
                     // combine the alpha value and color value into a single pixel value
                     layer_pixel = (layer_alpha << 24) | (layer_pixel & 0x00ffffff);
@@ -142,10 +144,69 @@ public class LayerManager {
         tool.apply(activeLayer, activeColor, x, y);
     }
 
+    public void toolDragged(Tool tool, int x, int y){
+        if (lastX == -1 || lastY == -1){
+            lastX = x;
+            lastY = y;
+        }
+
+        ArrayList<int[]> points = interpolatePoints(lastX, lastY, x, y);
+
+        for (int[] point : points){
+            tool.apply(activeLayer, activeColor, point[0], point[1]);
+        }
+
+        lastX = x;
+        lastY = y;
+    }
+
+    public void toolReleased(){
+        lastX = -1;
+        lastY = -1;
+    }
+
 
     /* PRIVATE_METHODS */
 
+    /**
+     * Returns an ArrayList of points that are interpolated between the two given points.
+     * @param x0 The x coordinate of the first point.
+     * @param y0 The y coordinate of the first point.  
+     * @param x1 The x coordinate of the second point.
+     * @param y1 The y coordinate of the second point.
+     * @return
+     */
+    private static ArrayList<int[]> interpolatePoints(int x0, int y0, int x1, int y1){
+        ArrayList<int[]> points = new ArrayList<>();
 
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+
+        int err = dx - dy;
+
+        while (true){
+            points.add(new int[]{x0, y0});
+
+            if (x0 == x1 && y0 == y1) break;
+
+            int e2 = 2 * err;
+
+            if (e2 > -dy){
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx){
+                err += dx;
+                y0 += sy;
+            }
+        }
+
+        return points;
+    }
 
 
    

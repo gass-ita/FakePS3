@@ -2,11 +2,13 @@ package UI;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import Layer.LayerManager;
 
-public class Editor extends JPanel implements MouseMotionListener {
+public class Editor extends JPanel implements MouseMotionListener, MouseListener {
 
     
     static final BackgroundStyle DEFAULT_BACKGROUND_STYLE = BackgroundStyle.GRID_BACKGROUND_STYLE;
@@ -33,6 +35,7 @@ public class Editor extends JPanel implements MouseMotionListener {
         height = manager.getHeight();
         setSize(width, height);
         addMouseMotionListener(this);
+        addMouseListener(this);
     }
 
     @Override
@@ -75,13 +78,39 @@ public class Editor extends JPanel implements MouseMotionListener {
 
     @Override
     public void mouseDragged(java.awt.event.MouseEvent e) {
-        //TODO: avoid using toolUsed but create a dragged event on the manager to fill the voids between the mouseMoved events
-        manager.toolUsed(manager.getActiveTool(), e.getX(), e.getY());
+        manager.toolDragged(manager.getActiveTool(), e.getX(), e.getY());
         repaint();
     }
 
+
+
     @Override
     public void mouseMoved(java.awt.event.MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        manager.toolReleased();
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
         
     }
 }
