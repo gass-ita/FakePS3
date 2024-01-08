@@ -1,7 +1,0 @@
-package UI;
-
-public enum BackgroundStyle {
-    SOLID_BACKGROUND_STYLE,
-    GRID_BACKGROUND_STYLE,
-    TRANSPARENT_BACKGROUND_STYLE
-}
