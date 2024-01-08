@@ -272,7 +272,7 @@ public class LayerManager {
         return tmp;
     }
 
-    public BufferedImage getSingleImage(int layer) {
+    public BufferedImage exportSingleImage(int layer) {
         return LayerList.get(layer).exportImage();
     }
 
@@ -331,7 +331,7 @@ public class LayerManager {
 
     /**
      * Returns the active color of the LayerManager.
-     * @return
+     * @return The active color of the LayerManager.
      */
     public int getActiveColor() {
         return activeColor;
@@ -339,12 +339,17 @@ public class LayerManager {
 
     /**
      * Sets the active color of the LayerManager.
-     * @param activeColor
+     * @param activeColor The new active color of the LayerManager.
      */
     public void setActiveColor(int activeColor) {
         this.activeColor = activeColor;
     }
 
+
+    /**
+     * Returns the active layer of the LayerManager.
+     * @param index The index of the layer to set as the active layer.
+     */
     public void setActiveLayer(int index) {
         if (index < 0 || index >= LayerList.size()) {
             Debugger.err("Invalid index for setActiveLayer()");

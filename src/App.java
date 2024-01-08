@@ -58,7 +58,7 @@ public class App {
         /* Brush brush2 = new Brush();
         manager.toolUsed(brush2, 300, 300); */
 
-        
+
 
         /* Layer l2 = new Layer();
         l2.setVisible(true);
@@ -66,10 +66,11 @@ public class App {
         manager.addLayer(l2);
         editor.repaint(); */
 
-        BufferedImage image_to_save = manager.exportImage();
+        
+        /* Saving the final image */
+        /* BufferedImage image_to_save = manager.exportSingleImage(1);
         File outputFile = new File("saved.png");
-        ImageIO.write(image_to_save, "png", outputFile);
-
+        ImageIO.write(image_to_save, "png", outputFile); */
 
         
         
