@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.awt.image.*;
 
 import Tools.Tool;
+import Utils.ColorConverter;
 
 
 
@@ -84,10 +85,16 @@ public class LayerManager {
                 int bgColor_pixel = bg_layer.isVisible() ? bg_layer.getPixelValue(x, y) : 0;
 
                 // calculate the alpha value of the background color based on the layer's opacity
-                int bgColor_alpha = (bgColor_pixel >> 24) & 0xff;
+                /* int bgColor_alpha = (bgColor_pixel >> 24) & 0xff;
                 int bgColor_red = (bgColor_pixel >> 16) & 0xff;
                 int bgColor_green = (bgColor_pixel >> 8) & 0xff;
-                int bgColor_blue = bgColor_pixel & 0xff;
+                int bgColor_blue = bgColor_pixel & 0xff; */
+                int[] bgColor_argb = ColorConverter.hexToArgb(bgColor_pixel);
+                int bgColor_alpha = bgColor_argb[0];
+                int bgColor_red = bgColor_argb[1];
+                int bgColor_green = bgColor_argb[2];
+                int bgColor_blue = bgColor_argb[3];
+                
                 bgColor_alpha = (int) (bgColor_alpha * bg_layer.getOpacity());
                 bgColor_red = (int) (bgColor_red * bg_layer.getChannelOpacity(ColorChannel.RED_CHANNEL));
                 bgColor_green = (int) (bgColor_green * bg_layer.getChannelOpacity(ColorChannel.GREEN_CHANNEL));
@@ -213,7 +220,7 @@ public class LayerManager {
 
     /* STATIC_METHODS */
     public static int calculateColor(int f, int b){
-        // extract the color components from f and b
+        /* // extract the color components from f and b
         int fa = (f >> 24) & 0xff;
         int fr = (f >> 16) & 0xff;
         int fg = (f >> 8) & 0xff;
@@ -222,7 +229,19 @@ public class LayerManager {
         int ba = (b >> 24) & 0xff;
         int br = (b >> 16) & 0xff;
         int bg = (b >> 8) & 0xff;
-        int bb = b & 0xff;
+        int bb = b & 0xff; */
+
+        int[] fa_argb = ColorConverter.hexToArgb(f);
+        int fa = fa_argb[0];
+        int fr = fa_argb[1];
+        int fg = fa_argb[2];
+        int fb = fa_argb[3];
+
+        int[] ba_argb = ColorConverter.hexToArgb(b);
+        int ba = ba_argb[0];
+        int br = ba_argb[1];
+        int bg = ba_argb[2];
+        int bb = ba_argb[3];
 
         // calculate the generated color of f over b
         int ca = ba + fa - ba * fa / 255;
@@ -231,7 +250,7 @@ public class LayerManager {
         int cb = (int) ((fb * fa + bb * (255 - fa)) / 255);
 
         // pack the color components into a single int
-        int c = (ca << 24) | (cr << 16) | (cg << 8) | cb;
+        int c = ColorConverter.argbToHex(ca, cr, cg, cb);
 
         return c;
     }
@@ -303,5 +322,22 @@ public class LayerManager {
 
     public void setActiveTool(Tool activeTool) {
         this.activeTool = activeTool;
+    }
+
+
+    /**
+     * Returns the active color of the LayerManager.
+     * @return
+     */
+    public int getActiveColor() {
+        return activeColor;
+    }
+
+    /**
+     * Sets the active color of the LayerManager.
+     * @param activeColor
+     */
+    public void setActiveColor(int activeColor) {
+        this.activeColor = activeColor;
     }
 }

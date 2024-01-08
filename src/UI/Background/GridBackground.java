@@ -7,8 +7,8 @@ public class GridBackground implements Background{
 
     /* DEFAULT VARIABLES */
     public static final int DEFAULT_BACKGROUND_GRID_SIZE = 10;
-    public static final Color DEFAULT_PRIMARY_COLOR = Color.WHITE;
-    public static final Color DEFAULT_SECONDARY_COLOR = Color.DARK_GRAY;
+    public static final Color DEFAULT_PRIMARY_COLOR = new Color(0xff141414);
+    public static final Color DEFAULT_SECONDARY_COLOR = new Color(0xff1f1f1f);
 
 
     /* PRIVATE VARIABLES */

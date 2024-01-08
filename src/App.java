@@ -49,7 +49,6 @@ public class App {
         }
 
 
-
         BetterBrush brush = new BetterBrush();
         brush.importBrushImage(test_image);
         brush.setSize(100);
@@ -58,9 +57,10 @@ public class App {
         Brush brush2 = new Brush();
         manager.toolUsed(brush2, 300, 300);
 
-        /* BufferedImage image_to_save = manager.exportImage();
-        File outputfile = new File("saved.png");
-        ImageIO.write(image_to_save, "png", outputfile); */
+
+        BufferedImage image_to_save = manager.exportImage();
+        File outputFile = new File("saved.png");
+        ImageIO.write(image_to_save, "png", outputFile);
 
 
         

@@ -5,6 +5,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import Utils.ColorConverter;
+
 
 
 public class Layer {
@@ -106,7 +108,7 @@ public class Layer {
 
 
     public void setPixel(int x, int y, int r, int g, int b, int a) {
-        int color = (a << 24) | (r << 16) | (g << 8) | b;
+        int color = ColorConverter.argbToHex(a, r, g, b);
         setPixel(x, y, color);
     }
 
@@ -272,7 +274,7 @@ public class Layer {
         // Loop through each pixel in the original pixel array
         for(int x = 0; x < pixels.length; x++){
             for(int y = 0; y < pixels[0].length; y++){
-                // Extract the color channels from the pixel
+                /* // Extract the color channels from the pixel
                 int image_r = (pixels[y][x] >> 16) & 0xFF;
                 int image_g = (pixels[y][x] >> 8) & 0xFF;
                 int image_b = (pixels[y][x] >> 0) & 0xFF;
@@ -282,7 +284,21 @@ public class Layer {
                 int color_r = (color >> 16) & 0xFF;
                 int color_g = (color >> 8) & 0xFF;
                 int color_b = (color >> 0) & 0xFF;
-                int color_a = (color >> 24) & 0xFF;
+                int color_a = (color >> 24) & 0xFF; */
+
+                // Extract the color channels from the pixel
+                int[] image_argb = ColorConverter.hexToArgb(pixels[y][x]);
+                int image_a = image_argb[0];
+                int image_r = image_argb[1];
+                int image_g = image_argb[2];
+                int image_b = image_argb[3];
+
+                // Extract the color channels from the given color
+                int[] color_argb = ColorConverter.hexToArgb(color);
+                int color_a = color_argb[0];
+                int color_r = color_argb[1];
+                int color_g = color_argb[2];
+                int color_b = color_argb[3];
 
                 // Check if the pixel is within the tolerance range of the given color
                 if(Math.abs(image_r - color_r) <= tolerance && Math.abs(image_g - color_g) <= tolerance && Math.abs(image_b - color_b) <= tolerance && Math.abs(image_a - color_a) <= tolerance){
