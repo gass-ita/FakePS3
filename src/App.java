@@ -13,6 +13,8 @@ import Layer.LayerManager;
 import Tools.Brush.BetterBrush;
 import Tools.Brush.Brush;
 import Tools.Fill.Fill;
+import Tools.Filters.Box;
+import Tools.Filters.Impulse;
 import UI.Editor;
 import Utils.ColorConverter;
 import Utils.Debugger;
@@ -61,7 +63,9 @@ public class App {
         manager.toolUsed(brush2, 300, 300); */
         
 
-
+        Box impulse = new Box();
+        manager.toolUsed(impulse, 0, 0);
+        editor.repaint();
 
         /* Layer l2 = new Layer();
         l2.setVisible(true);
