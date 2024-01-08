@@ -14,6 +14,7 @@ import Tools.Brush.BetterBrush;
 import Tools.Brush.Brush;
 import Tools.Fill.Fill;
 import Tools.Filters.BoxFilter;
+import Tools.Filters.GaussianFilter;
 import Tools.Filters.ImpulseFilter;
 import UI.Editor;
 import Utils.ColorConverter;
@@ -63,7 +64,7 @@ public class App {
         manager.toolUsed(brush2, 300, 300); */
         
 
-        BoxFilter impulse = new BoxFilter();
+        GaussianFilter impulse = new GaussianFilter();
         manager.toolUsed(impulse, 0, 0);
         editor.repaint();
 
@@ -77,7 +78,7 @@ public class App {
         /* Saving the final image */
         /* BufferedImage image_to_save = manager.exportSingleImage(1);
         File outputFile = new File("saved.png");
-        ImageIO.write(image_to_save, "png", outputFile); */        
+        ImageIO.write(image_to_save, "png", outputFile); */     
      
 
 
