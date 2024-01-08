@@ -14,7 +14,7 @@ public class LayerManager {
     static final int DEFAULT_WIDTH = 800;
     static final int DEFAULT_HEIGHT = 800;
     static final int DEFAULT_ACTIVE_COLOR = 0xffffffff;
-    static final Tool DEFAULT_ACTIVE_TOOL = new Tools.BetterBrush();
+    static final Tool DEFAULT_ACTIVE_TOOL = new Tools.Brush.BetterBrush();
 
     /* VARIABLES */
     private ArrayList<Layer> LayerList = new ArrayList<>();
@@ -151,11 +151,11 @@ public class LayerManager {
     }
 
     
-    public void toolUsed(Tool tool, int x, int y){
+    public void toolUsed(Tool tool, int x, int y) throws Exception{
         tool.apply(activeLayer, activeColor, x, y);
     }
 
-    public void toolDragged(Tool tool, int x, int y){
+    public void toolDragged(Tool tool, int x, int y) throws Exception{
         if (lastX == -1 || lastY == -1){
             lastX = x;
             lastY = y;

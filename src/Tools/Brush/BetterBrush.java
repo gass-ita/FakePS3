@@ -1,4 +1,4 @@
-package Tools;
+package Tools.Brush;
 
 import java.awt.image.BufferedImage;
 

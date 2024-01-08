@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import Utils.ColorConverter;
+import Utils.Debugger;
 
 
 
@@ -172,23 +173,6 @@ public class Layer {
         }
     }
 
-    public ArrayList<Point> floodSelection(int x, int y, int tolerance){
-        // Get the color of the pixel at the given coordinates.
-        int color = this.getPixelValue(x, y);
-        // Create a binary map of the layer, where pixels with a color within the tolerance range are set to 1 and all others are set to 0.
-        int[][] binary_map = binaryMap(color, tolerance);
-        // Perform a flood fill on the binary map starting from the given coordinates.
-        // This will select all pixels that are connected to the starting pixel and have a color within the tolerance range.
-        ArrayList<Point> points = floodFill(binary_map, x, y);
-        // Return the selected pixels.
-        return points;
-    }
-
-    public ArrayList<Point> floodSelection(int x, int y){
-        return floodSelection(x, y, 0);
-    }
-
-
     public Layer copy(){
         return Layer.copy(this);
     }
@@ -262,98 +246,7 @@ public class Layer {
         return resized_image;
     }
 
-    /**
-     * This method creates a binary map of a given image, where pixels with a color within the tolerance range are set to 1 and all others are set to 0.
-     * 
-     * @param pixels the 2D array of pixels to create the binary map from
-     * @param color the color to compare the pixels to
-     * @param tolerance the tolerance range to use when comparing the pixels
-     * @return the binary map
-     */
-    private static int[][] binaryMap(int[][] pixels, int color, int tolerance){
-        // Create a new 2D array to store the binary map
-        int[][] binary_map = new int[pixels.length][pixels[0].length];
-        // Loop through each pixel in the original pixel array
-        for(int x = 0; x < pixels.length; x++){
-            for(int y = 0; y < pixels[0].length; y++){
-                /* // Extract the color channels from the pixel
-                int image_r = (pixels[y][x] >> 16) & 0xFF;
-                int image_g = (pixels[y][x] >> 8) & 0xFF;
-                int image_b = (pixels[y][x] >> 0) & 0xFF;
-                int image_a = (pixels[y][x] >> 24) & 0xFF;
-
-                // Extract the color channels from the given color
-                int color_r = (color >> 16) & 0xFF;
-                int color_g = (color >> 8) & 0xFF;
-                int color_b = (color >> 0) & 0xFF;
-                int color_a = (color >> 24) & 0xFF; */
-
-                // Extract the color channels from the pixel
-                int[] image_argb = ColorConverter.hexToArgb(pixels[y][x]);
-                int image_a = image_argb[0];
-                int image_r = image_argb[1];
-                int image_g = image_argb[2];
-                int image_b = image_argb[3];
-
-                // Extract the color channels from the given color
-                int[] color_argb = ColorConverter.hexToArgb(color);
-                int color_a = color_argb[0];
-                int color_r = color_argb[1];
-                int color_g = color_argb[2];
-                int color_b = color_argb[3];
-
-                // Check if the pixel is within the tolerance range of the given color
-                if(Math.abs(image_r - color_r) <= tolerance && Math.abs(image_g - color_g) <= tolerance && Math.abs(image_b - color_b) <= tolerance && Math.abs(image_a - color_a) <= tolerance){
-                    // If it is, set the corresponding pixel in the binary map to 1
-                    binary_map[y][x] = 1;
-                }else{
-                    // Otherwise, set it to 0
-                    binary_map[y][x] = 0;
-                }
-            }
-        }
-        // Return the binary map
-        return binary_map;
-    }
-
-    private int[][] binaryMap(int color, int tolerance){
-        return binaryMap(this.pixels, color, tolerance);
-    }
-
-
-    /**
-    * Performs a flood fill algorithm on a binary map.
-    * 
-    * @param binaryMap the binary map to perform the flood fill on
-    * @param x the starting x coordinate
-    * @param y the starting y coordinate
-    * @param points an ArrayList of points to store the result
-    * @return the ArrayList of points that were filled
-    */
-    private static ArrayList<Point> floodFill(int[][] binaryMap, int x, int y, ArrayList<Point> points){
-        // Check if the current coordinates are out of bounds
-        if(x < 0 || x >= binaryMap[0].length || y < 0 || y >= binaryMap.length){
-            // If they are, return the current ArrayList of points
-            return points;
-        }
-        // Check if the current pixel is set to 1 (meaning it hasn't been filled yet)
-        if(binaryMap[y][x] == 1){
-            // If it is, add the current point to the ArrayList of points
-            points.add(new Point(x, y));
-            // Set the current pixel to 0 (meaning it has been filled)
-            binaryMap[y][x] = 0;
-            // Recursively call the floodFill method on the neighboring pixels
-            points = floodFill(binaryMap, x + 1, y, points);
-            points = floodFill(binaryMap, x - 1, y, points);
-            points = floodFill(binaryMap, x, y + 1, points);
-            points = floodFill(binaryMap, x, y - 1, points);
-        }
-        // Return the ArrayList of points that were filled
-        return points;
-    }
-    private ArrayList<Point> floodFill(int[][] binaryMap, int x, int y){
-        return floodFill(binaryMap, x, y, new ArrayList<Point>());
-    }
+    
 
     /* STATIC */
 
@@ -431,7 +324,7 @@ public class Layer {
         } else if(opacity > 1){
             opacity = 1;
         } */
-        System.out.println("setting opacity to " + opacity);
+        Debugger.log("setting opacity to " + opacity);
         this.opacity = opacity;
     }
 

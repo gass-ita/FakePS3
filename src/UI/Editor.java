@@ -7,6 +7,7 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import Layer.LayerManager;
 import UI.Background.*;
+import Utils.Debugger;
 
 public class Editor extends JPanel implements MouseMotionListener, MouseListener {
 
@@ -46,7 +47,11 @@ public class Editor extends JPanel implements MouseMotionListener, MouseListener
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        manager.toolDragged(manager.getActiveTool(), e.getX(), e.getY());
+        try {
+            manager.toolDragged(manager.getActiveTool(), e.getX(), e.getY());
+        } catch (Exception e1) {
+            Debugger.err(e1.getMessage());
+        }
         repaint();
     }
 
@@ -64,7 +69,11 @@ public class Editor extends JPanel implements MouseMotionListener, MouseListener
 
     @Override
     public void mousePressed(MouseEvent e) {
-        manager.toolUsed(manager.getActiveTool(), e.getX(), e.getY());
+        try {
+            manager.toolUsed(manager.getActiveTool(), e.getX(), e.getY());
+        } catch (Exception e1) {
+            Debugger.err(e1.getMessage());
+        }
         repaint();
     }
 

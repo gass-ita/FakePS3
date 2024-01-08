@@ -1,6 +1,7 @@
-package Tools;
+package Tools.Eraser;
 
 import Layer.Layer;
+import Tools.Brush.Brush;
 
 public class Eraser extends Brush{
     public Eraser() {

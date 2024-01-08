@@ -3,16 +3,18 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import Layer.Layer;
 import Layer.LayerManager;
-import Tools.BetterBrush;
-import Tools.Brush;
-import Tools.Fill;
+import Tools.Brush.BetterBrush;
+import Tools.Brush.Brush;
+import Tools.Fill.Fill;
 import UI.Editor;
+import Utils.ColorConverter;
 import Utils.Debugger;
 
 public class App {
@@ -21,8 +23,8 @@ public class App {
         Debugger.log("Starting the app");
 
         Layer layer = new Layer();
-        /* BufferedImage image = ImageIO.read(new File("test.jpg")); */
-        /* layer.importImage(image); */
+        BufferedImage image = ImageIO.read(new File("a.jpg"));
+        layer.importImage(image);
         layer.setVisible(true); 
         LayerManager manager = new LayerManager(800, 800);
 
@@ -46,17 +48,18 @@ public class App {
                     test_image.setRGB(i, j, 0xff000000);
                 }
             }
-        }
+        } */
 
-        BetterBrush brush = new BetterBrush();
+        /* BetterBrush brush = new BetterBrush();
         brush.importBrushImage(test_image);
         brush.setSize(100);
-        manager.toolUsed(brush, 500, 500); */
+        manager.toolUsed(brush, 500, 500);
 
 
 
-        /* Brush brush2 = new Brush();
+        Brush brush2 = new Brush();
         manager.toolUsed(brush2, 300, 300); */
+        
 
 
 
@@ -70,12 +73,7 @@ public class App {
         /* Saving the final image */
         /* BufferedImage image_to_save = manager.exportSingleImage(1);
         File outputFile = new File("saved.png");
-        ImageIO.write(image_to_save, "png", outputFile); */
-
-        
-        
-
-        
+        ImageIO.write(image_to_save, "png", outputFile); */        
      
 
 

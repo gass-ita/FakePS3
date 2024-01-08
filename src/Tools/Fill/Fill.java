@@ -1,8 +1,9 @@
-package Tools;
+package Tools.Fill;
 
 import java.util.ArrayList;
 
 import Layer.Layer;
+import Tools.Tool;
 import Utils.ColorConverter;
 import Utils.Debugger;
 

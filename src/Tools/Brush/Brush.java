@@ -1,8 +1,9 @@
-package Tools;
+package Tools.Brush;
 
 
 
 import Layer.Layer;
+import Tools.Tool;
 
 public class Brush implements Tool{
     public static int DEFAULT_SIZE = 10;

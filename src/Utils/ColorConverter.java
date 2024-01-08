@@ -25,4 +25,20 @@ public class ColorConverter {
         argb[3] = hex & 0xff;
         return argb;
     }
+
+    public static int getAlpha(int hex) {
+        return (hex >> 24) & 0xff;
+    }
+
+    public static int getRed(int hex) {
+        return (hex >> 16) & 0xff;
+    }
+
+    public static int getGreen(int hex) {
+        return (hex >> 8) & 0xff;
+    }
+
+    public static int getBlue(int hex) {
+        return hex & 0xff;
+    }
 }
