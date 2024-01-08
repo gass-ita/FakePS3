@@ -6,13 +6,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import Layer.LayerManager;
-import UI.Background.Background;
 import UI.Background.*;
 
 public class Editor extends JPanel implements MouseMotionListener, MouseListener {
 
     
-    static final Background DEFAULT_BACKGROUND_STYLE = new SolidBackground();
+    static final Background DEFAULT_BACKGROUND_STYLE = new GridBackground();
 
 
     private LayerManager manager;
@@ -65,7 +64,8 @@ public class Editor extends JPanel implements MouseMotionListener, MouseListener
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
+        manager.toolUsed(manager.getActiveTool(), e.getX(), e.getY());
+        repaint();
     }
 
     @Override
