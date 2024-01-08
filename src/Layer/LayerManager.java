@@ -5,6 +5,7 @@ import java.awt.image.*;
 
 import Tools.Tool;
 import Utils.ColorConverter;
+import Utils.Debugger;
 
 
 
@@ -24,6 +25,7 @@ public class LayerManager {
     private Tool activeTool = DEFAULT_ACTIVE_TOOL;
     private int lastX = -1;
     private int lastY = -1;
+    
 
     /* CONSTRUCTORS */
 
@@ -117,10 +119,12 @@ public class LayerManager {
                     int layer_pixel = layer.getPixelValue(x, y);
 
                     // calculate the alpha value of the layer based on its opacity
-                    int layer_alpha = (layer_pixel >> 24) & 0xff;
-                    int layer_red = (layer_pixel >> 16) & 0xff;
-                    int layer_green = (layer_pixel >> 8) & 0xff;
-                    int layer_blue = layer_pixel & 0xff;
+                    int[] layer_argb = ColorConverter.hexToArgb(layer_pixel);
+                    int layer_alpha = layer_argb[0];
+                    int layer_red = layer_argb[1];
+                    int layer_green = layer_argb[2];
+                    int layer_blue = layer_argb[3];
+
                     layer_alpha = (int) (layer_alpha * layer.getOpacity());
                     layer_red = (int) (layer_red * layer.getChannelOpacity(ColorChannel.RED_CHANNEL));
                     layer_green = (int) (layer_green * layer.getChannelOpacity(ColorChannel.GREEN_CHANNEL));
@@ -339,5 +343,13 @@ public class LayerManager {
      */
     public void setActiveColor(int activeColor) {
         this.activeColor = activeColor;
+    }
+
+    public void setActiveLayer(int index) {
+        if (index < 0 || index >= LayerList.size()) {
+            Debugger.err("Invalid index for setActiveLayer()");
+            return;
+        }
+        activeLayer = LayerList.get(index);
     }
 }

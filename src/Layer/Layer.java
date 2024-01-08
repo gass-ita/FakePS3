@@ -216,10 +216,12 @@ public class Layer {
     }
 
     public Color getPixelColor(int x, int y) {
-        int r = (this.pixels[y][x] >> 16) & 0xFF;
-        int g = (this.pixels[y][x] >> 8) & 0xFF;
-        int b = (this.pixels[y][x] >> 0) & 0xFF;
-        int a = (this.pixels[y][x] >> 24) & 0xFF;
+        int color = getPixelValue(x, y);
+        int[] argb = ColorConverter.hexToArgb(color);
+        int a = argb[0];
+        int r = argb[1];
+        int g = argb[2];
+        int b = argb[3];
         return new Color(r, g, b, a);
     }
 

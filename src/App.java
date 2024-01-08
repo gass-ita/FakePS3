@@ -36,7 +36,7 @@ public class App {
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        BufferedImage test_image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        /* BufferedImage test_image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
         //make test_image like a checkboard
         for (int i = 0; i < test_image.getWidth(); i++) {
             for (int j = 0; j < test_image.getHeight(); j++) {
@@ -48,15 +48,23 @@ public class App {
             }
         }
 
-
         BetterBrush brush = new BetterBrush();
         brush.importBrushImage(test_image);
         brush.setSize(100);
-        manager.toolUsed(brush, 500, 500);
+        manager.toolUsed(brush, 500, 500); */
 
-        Brush brush2 = new Brush();
-        manager.toolUsed(brush2, 300, 300);
 
+
+        /* Brush brush2 = new Brush();
+        manager.toolUsed(brush2, 300, 300); */
+
+        
+
+        /* Layer l2 = new Layer();
+        l2.setVisible(true);
+        l2.fill(0xaa0000ff);
+        manager.addLayer(l2);
+        editor.repaint(); */
 
         BufferedImage image_to_save = manager.exportImage();
         File outputFile = new File("saved.png");

@@ -3,6 +3,7 @@ package Tools;
 import java.util.ArrayList;
 
 import Layer.Layer;
+import Utils.ColorConverter;
 import Utils.Debugger;
 
 public class Fill implements Tool{
@@ -32,15 +33,18 @@ public class Fill implements Tool{
     private boolean isPixelConsidered(int[][] colorMap, int x, int y, int color){
         int c = colorMap[y][x];
         
-        int ca = (c >> 24) & 0xFF;
-        int cr = (c >> 16) & 0xFF;
-        int cg = (c >> 8) & 0xFF;
-        int cb = c & 0xFF;
+        int cargb[] = ColorConverter.hexToArgb(c);
 
-        int a = (color >> 24) & 0xFF;
-        int r = (color >> 16) & 0xFF;
-        int g = (color >> 8) & 0xFF;
-        int b = color & 0xFF;
+        int ca = cargb[0];
+        int cr = cargb[1];
+        int cg = cargb[2];
+        int cb = cargb[3];
+
+        int[] color_argb = ColorConverter.hexToArgb(color);
+        int a = color_argb[0];
+        int r = color_argb[1];
+        int g = color_argb[2];
+        int b = color_argb[3];
 
         return (ca >= a - tollerance && ca <= a + tollerance) && (cr >= r - tollerance && cr <= r + tollerance) && (cg >= g - tollerance && cg <= g + tollerance) && (cb >= b - tollerance && cb <= b + tollerance);
     }
