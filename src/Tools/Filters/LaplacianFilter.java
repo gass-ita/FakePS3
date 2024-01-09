@@ -13,7 +13,7 @@ public class LaplacianFilter implements Filter {
     public void apply(Layer layer, int color, int x, int y) throws Exception {
         System.out.println("Applying filter");
         int[][] image = layer.getPixels();
-        double[][] mask = getMask(size);
+        double[][] mask = getMask();
         int[][] result = Filter.convolution(image, mask);
 
         for (int yi = 0; yi < result.length; yi++) {
@@ -24,7 +24,7 @@ public class LaplacianFilter implements Filter {
     }
 
     @Override
-    public double[][] getMask(int size) {
+    public double[][] getMask() {
         /* Shift and subtract */
         double[][] mask = new double[size][size];
         for (int yi = 0; yi < size; yi++) {

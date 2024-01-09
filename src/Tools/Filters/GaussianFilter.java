@@ -1,20 +1,15 @@
 package Tools.Filters;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.nio.Buffer;
-
-import javax.imageio.ImageIO;
-
 import Layer.Layer;
 import Tools.Filter;
+
 
 public class GaussianFilter implements Filter {
 
     /* DEFAULT VARIABLES */
-    private static final double DEFAULT_SIGMA = 0.1;
-
+    private static final double DEFAULT_SIGMA = 10;
     private double sigma = DEFAULT_SIGMA;
+
     // size = 2*pi*sigma
     private int size = (int) Math.round(2 * (int) Math.PI * sigma);
 
@@ -22,7 +17,7 @@ public class GaussianFilter implements Filter {
     @Override
     public void apply(Layer layer, int color, int x, int y) throws Exception {
         int[][] image = layer.getPixels();
-        double[][] mask = getMask(size);
+        double[][] mask = getMask();
 
         int[][] result = Filter.convolution(image, mask);
 
@@ -34,41 +29,50 @@ public class GaussianFilter implements Filter {
     }
 
     @Override
-    public double[][] getMask(int size) {
-        /* generate a mask based on the gaussian function */
+    public double[][] getMask() {
+        double sigma = getSigma();
+        int size = getSize();
+        
         double[][] mask = new double[size][size];
 
-        //size = 2*pi*sigma
-        double sigma = size / (2 * Math.PI);
-
-        //mask[i][j] = (1)/(2*pi*sigma^2) * e^(-1/2 * ((i^2 + j^2)/(sigma^2)))
         double sum = 0;
         for (int yi = 0; yi < size; yi++) {
             for (int xi = 0; xi < size; xi++) {
-                double value = (1) / (2 * Math.PI * Math.pow(sigma, 2)) * Math.exp(-1 / 2 * ((Math.pow(xi, 2) + Math.pow(yi, 2)) / (Math.pow(sigma, 2))));
-                mask[yi][xi] = value;
-                sum += value;
+                double x = xi - size / 2;
+                double y = yi - size / 2;
+                mask[yi][xi] = Math.exp(-(x * x + y * y) / (2 * sigma * sigma));
+                sum += mask[yi][xi];
             }
         }
 
-        //normalize the mask, the sum of all values must be 1
+        /* normalize */
+
         for (int yi = 0; yi < size; yi++) {
             for (int xi = 0; xi < size; xi++) {
                 mask[yi][xi] /= sum;
             }
         }
-        
-        
-
+        Filter.saveMaskToImage(mask, "test.png");
         return mask;
+
     }
+
+
+    
+
+    
 
     public void setSigma(double sigma) {
         this.sigma = sigma;
+        this.size = (int) Math.round(2 * (int) Math.PI * sigma);
     }
 
     public double getSigma() {
         return sigma;
+    }
+
+    public int getSize() {
+        return size;
     }
     
 }

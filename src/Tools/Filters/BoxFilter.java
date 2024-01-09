@@ -9,7 +9,7 @@ public class BoxFilter implements Filter{
 
     private int size = DEFAULT_SIZE;
     
-    public double[][] getMask(int size){
+    public double[][] getMask(){
         double[][] mask = new double[size][size];
         /* fill the mask except the borders */
         for (int yi = 1; yi < size-1; yi++) {
@@ -23,7 +23,7 @@ public class BoxFilter implements Filter{
     @Override
     public void apply(Layer layer, int color, int x, int y) throws Exception {
         int[][] image = layer.getPixels();
-        double[][] mask = getMask(size);
+        double[][] mask = getMask();
         int[][] result = Filter.convolution(image, mask);
 
         for (int yi = 0; yi < result.length; yi++) {
