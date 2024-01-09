@@ -6,69 +6,138 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import Layer.Layer;
+import Tools.Filters.BorderSolution;
 import Utils.ColorConverter;
 import Utils.Debugger;
 
 public interface Filter extends Tool {
 
-    static int[][] convolution(int[][] image, double[][] mask) {
-        /*
-         * the image will be a matrix of integers[y][x] where the colors are stored like
-         * 0xaarrggbb, the mask will be a matrix of double[y][x] where the values are
-         * bounded from 0 to 1 (0 black, 1 white)
-         */
-        /* lesson: https://youtu.be/-LD9MxBUFQo */
-
+    static int[][] fullConvolution(int[][] image, double[][] mask) throws Exception {
+        Debugger.log("Full convolution");
+        /* chronometrate the fullConvolution */
+        long startTime = System.nanoTime();
         int[][] result = new int[image.length][image[0].length];
-        int maskSize = mask.length;
 
         for (int y = 0; y < image.length; y++) {
             for (int x = 0; x < image[0].length; x++) {
+                result[y][x] = convolution(image, mask, x, y, BorderSolution.PAD_WITH_CONSTANT);
+            }
+        }
+        long endTime = System.nanoTime();
+        Debugger.log("Finished convolution in: " + ((endTime - startTime) / 1000000) + " ms");
 
-                double red = 0;
-                double green = 0;
-                double blue = 0;
+        return result;
 
-                for (int i = 0; i < maskSize; i++) {
-                    for (int j = 0; j < maskSize; j++) {
-                        int imageX = x + i - maskSize / 2;
-                        int imageY = y + j - maskSize / 2;
+    }
 
-                        if (imageX < 0 || imageX >= image[0].length || imageY < 0 || imageY >= image.length) {
-                            continue;
+    public static int convolution(int[][] image, double[][] mask, int x, int y, BorderSolution borderSolution)
+            throws Exception {
+        if (x < 0 || x >= image[0].length || y < 0 || y >= image.length) {
+            Debugger.err("x or y out of bounds");
+            throw new IllegalArgumentException("x or y out of bounds");
+        }
+
+        int[][] c_image = new int[mask.length][mask[0].length];
+
+        /*
+         * if x, y locate on a dangerous position, for example if the mask is 5x5 then
+         * if x <= 2 || y <= 2 || x >= image[0].length - 2 || y >= image.length - 2
+         */
+        if (x < mask[0].length / 2 || y < mask.length / 2 || x >= (((image[0].length) - mask[0].length / 2))
+                || y >= (((image.length) - mask.length / 2))) {
+            /*
+             * Debugger.warn("x or y on a dangerous position: " + x + " " + y + " " +
+             * (((image[0].length) - mask[0].length / 2) + 1));
+             */
+            switch (borderSolution) {
+                case IGNORE_BORDER:
+                    return image[y][x];
+
+                case PAD_WITH_CONSTANT:
+
+                    for (int yi = 0; yi < mask.length; yi++) {
+                        for (int xi = 0; xi < mask[0].length; xi++) {
+                            if (x + xi - mask[0].length / 2 < 0 || x + xi - mask[0].length / 2 >= image[0].length
+                                    || y + yi - mask.length / 2 < 0 || y + yi - mask.length / 2 >= image.length) {
+                                c_image[yi][xi] = 0;
+                            } else {
+                                c_image[yi][xi] = image[y + yi - mask.length / 2][x + xi - mask[0].length / 2];
+                            }
                         }
-
-                        int color = image[imageY][imageX];
-
-                        /* remember to reflect the mask */
-                        double maskValue = mask[maskSize - 1 - i][maskSize - 1 - j];
-
-                        red += ColorConverter.getRed(color) * maskValue;
-                        green += ColorConverter.getGreen(color) * maskValue;
-                        blue += ColorConverter.getBlue(color) * maskValue;
                     }
+
+                    break;
+
+                case PAD_WITH_REFLECTION:
+                    
+                    for (int yi = 0; yi < mask.length; yi++) {
+                        for (int xi = 0; xi < mask[0].length; xi++) {
+                            int imageX = x + xi - mask[0].length / 2;
+                            int imageY = y + yi - mask.length / 2;
+
+                            if (imageX < 0) {
+                                imageX = -imageX;
+                            } else if (imageX >= image[0].length) {
+                                imageX = image[0].length - (imageX - image[0].length) - 1;
+                            }
+
+                            if (imageY < 0) {
+                                imageY = -imageY;
+                            } else if (imageY >= image.length) {
+                                imageY = image.length - (imageY - image.length) - 1;
+                            }
+
+                            c_image[yi][xi] = image[imageY][imageX];
+                        }
+                    }
+
+                    break;
+
+            }
+        } else {
+            /* copy the interested part of the image into the c_image */
+            for (int yi = 0; yi < mask.length; yi++) {
+                for (int xi = 0; xi < mask[0].length; xi++) {
+                    c_image[yi][xi] = image[y + yi - mask.length / 2][x + xi - mask[0].length / 2];
                 }
-
-                int newRed = (int) Math.round(red);
-                int newGreen = (int) Math.round(green);
-                int newBlue = (int) Math.round(blue);
-
-                newRed = Math.min(newRed, 255);
-                newGreen = Math.min(newGreen, 255);
-                newBlue = Math.min(newBlue, 255);
-
-                newRed = Math.max(newRed, 0);
-                newGreen = Math.max(newGreen, 0);
-                newBlue = Math.max(newBlue, 0);
-
-                /* lets keep the old alpha */
-                int newColor = (ColorConverter.getAlpha(image[y][x]) << 24) | (newRed << 16) | (newGreen << 8)
-                        | newBlue;
-                result[y][x] = newColor;
             }
         }
 
-        return result;
+        double red = 0;
+        double green = 0;
+        double blue = 0;
+
+        for (int i = 0; i < mask.length; i++) {
+            for (int j = 0; j < mask[0].length; j++) {
+
+                int color = c_image[i][j];
+
+                double maskValue = mask[mask.length - 1 - i][mask[0].length - 1 - j];
+
+                red += ColorConverter.getRed(color) * maskValue;
+                green += ColorConverter.getGreen(color) * maskValue;
+                blue += ColorConverter.getBlue(color) * maskValue;
+            }
+        }
+
+        int newRed = (int) Math.round(red);
+        int newGreen = (int) Math.round(green);
+        int newBlue = (int) Math.round(blue);
+
+        newRed = Math.min(newRed, 255);
+        newGreen = Math.min(newGreen, 255);
+        newBlue = Math.min(newBlue, 255);
+
+        newRed = Math.max(newRed, 0);
+        newGreen = Math.max(newGreen, 0);
+        newBlue = Math.max(newBlue, 0);
+
+        int newColor = (ColorConverter.getAlpha(c_image[mask.length / 2][mask[0].length / 2]) << 24) | (newRed << 16)
+                | (newGreen << 8)
+                | newBlue;
+
+        return newColor;
+
     }
 
     public static void saveMaskToText(double[][] mask, String filename) {
@@ -134,12 +203,12 @@ public interface Filter extends Tool {
         }
 
         Debugger.log("Saved image");
-        
+
     }
 
     @Override
     public void apply(Layer layer, int color, int x, int y) throws Exception;
 
-    public double[][] getMask();
+    public double[][] getMask(int[][] image, int x, int y) throws Exception;
 
 }
