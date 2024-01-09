@@ -120,6 +120,8 @@ public class Layer {
     public void setPixel(int x, int y, int color) {
         if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
             this.pixels[y][x] = color;
+        } else {
+            Debugger.warn("Pixel out of bounds: (" + x + ", " + y + ")");
         }
     }
 
