@@ -27,11 +27,16 @@ public class App {
 
         Layer layer = new Layer();
         BufferedImage image = ImageIO.read(new File("a.jpg"));
-        layer.importImage(image);
+        Layer l2 = new Layer();
+        l2.importImage(image);
+        l2.setVisible(true);
+        /* layer.importImage(image); */
         layer.setVisible(true); 
         LayerManager manager = new LayerManager(800, 800);
 
         manager.addLayer(layer);
+        manager.addLayer(l2);
+        manager.setActiveLayer(1);
         
 
         Editor editor = new Editor(manager);
@@ -78,11 +83,7 @@ public class App {
         /* Saving the final image */
         /* BufferedImage image_to_save = manager.exportSingleImage(1);
         File outputFile = new File("saved.png");
-        ImageIO.write(image_to_save, "png", outputFile); */     
-     
-
-
-        
+        ImageIO.write(image_to_save, "png", outputFile); */         
         
 
     }

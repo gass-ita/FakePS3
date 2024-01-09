@@ -196,6 +196,9 @@ public class Layer {
     }
 
     public int getPixelValue(int x, int y) {
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+            return ColorConverter.argbToHex(DEFAULT_BG_COLOR.getAlpha(), DEFAULT_BG_COLOR.getRed(), DEFAULT_BG_COLOR.getGreen(), DEFAULT_BG_COLOR.getBlue());
+        }
         return this.pixels[y][x];
     }
 

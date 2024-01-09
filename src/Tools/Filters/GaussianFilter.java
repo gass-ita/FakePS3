@@ -51,7 +51,7 @@ public class GaussianFilter implements Filter {
             }
         }
 
-        //normalize the mask
+        //normalize the mask, the sum of all values must be 1
         for (int yi = 0; yi < size; yi++) {
             for (int xi = 0; xi < size; xi++) {
                 mask[yi][xi] /= sum;
