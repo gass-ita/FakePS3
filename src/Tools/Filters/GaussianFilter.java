@@ -12,11 +12,11 @@ import Tools.Filter;
 public class GaussianFilter implements Filter {
 
     /* DEFAULT VARIABLES */
-    private static final int DEFAULT_SIGMA = 3;
+    private static final double DEFAULT_SIGMA = 0.1;
 
-    private int sigma = DEFAULT_SIGMA;
+    private double sigma = DEFAULT_SIGMA;
     // size = 2*pi*sigma
-    private int size = 2 * (int) Math.PI * sigma;
+    private int size = (int) Math.round(2 * (int) Math.PI * sigma);
 
 
     @Override
