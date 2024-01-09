@@ -13,7 +13,7 @@ public class BetterEraser extends BetterBrush{
         super(size);
     }
 
-    public BetterEraser(int[][] brushMask, int maskSize) {
+    public BetterEraser(double[][] brushMask, int maskSize) {
         super(brushMask, maskSize);
     }
 
