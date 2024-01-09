@@ -62,5 +62,13 @@ public class GaussianFilter implements Filter {
 
         return mask;
     }
+
+    public void setSigma(double sigma) {
+        this.sigma = sigma;
+    }
+
+    public double getSigma() {
+        return sigma;
+    }
     
 }
