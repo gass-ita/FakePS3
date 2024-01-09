@@ -7,7 +7,7 @@ import Tools.Filter;
 public class GaussianFilter implements Filter {
 
     /* DEFAULT VARIABLES */
-    private static final double DEFAULT_SIGMA = 10;
+    private static final double DEFAULT_SIGMA = 3;
     private double sigma = DEFAULT_SIGMA;
 
     // size = 2*pi*sigma

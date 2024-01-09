@@ -12,10 +12,12 @@ import Layer.Layer;
 import Layer.LayerManager;
 import Tools.Brush.BetterBrush;
 import Tools.Brush.Brush;
+import Tools.Eraser.BetterEraser;
 import Tools.Fill.Fill;
 import Tools.Filters.BoxFilter;
 import Tools.Filters.GaussianFilter;
 import Tools.Filters.ImpulseFilter;
+import Tools.Filters.LaplacianFilter;
 import UI.Editor;
 import Utils.ColorConverter;
 import Utils.Debugger;
@@ -58,18 +60,20 @@ public class App {
             }
         } */
 
-        /* BetterBrush brush = new BetterBrush();
+        BufferedImage test_image = ImageIO.read(new File("brush.png"));
+        BetterBrush brush = new BetterBrush();
         brush.importBrushImage(test_image);
-        brush.setSize(100);
-        manager.toolUsed(brush, 500, 500);
+        brush.setSize(25);
+        manager.setActiveTool(brush);
+        
 
 
-
-        Brush brush2 = new Brush();
+       /*  Brush brush2 = new Brush();
         manager.toolUsed(brush2, 300, 300); */
         
 
-        GaussianFilter impulse = new GaussianFilter();
+        LaplacianFilter impulse = new LaplacianFilter();
+        impulse.setSize(5);
         manager.toolUsed(impulse, 0, 0);
         editor.repaint();
 
