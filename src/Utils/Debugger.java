@@ -11,7 +11,7 @@ public class Debugger{
         NONE
     }
 
-    public static final DebuggerLevel CURRENT_LEVEL = DebuggerLevel.NONE;
+    public static final DebuggerLevel CURRENT_LEVEL = DebuggerLevel.DEBUG;
 
     static Date d;
 

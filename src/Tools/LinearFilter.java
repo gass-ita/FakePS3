@@ -10,12 +10,13 @@ import Tools.Filters.BorderSolution;
 import Utils.ColorConverter;
 import Utils.Debugger;
 
-public interface LinearFilter extends Tool {
+public abstract class LinearFilter implements Tool {
 
-    static int[][] fullConvolution(int[][] image, double[][] mask) throws Exception {
+    protected static int[][] fullConvolution(int[][] image, double[][] mask) throws Exception {
         Debugger.log("Full convolution");
-        /* chronometrate the fullConvolution */
+        
         long startTime = System.nanoTime();
+
         int[][] result = new int[image.length][image[0].length];
 
         for (int y = 0; y < image.length; y++) {
@@ -23,7 +24,9 @@ public interface LinearFilter extends Tool {
                 result[y][x] = convolution(image, mask, x, y, BorderSolution.PAD_WITH_CONSTANT);
             }
         }
+        
         long endTime = System.nanoTime();
+
         Debugger.log("Finished convolution in: " + ((endTime - startTime) / 1000000) + " ms");
 
         return result;
@@ -226,8 +229,25 @@ public interface LinearFilter extends Tool {
     }
 
     @Override
-    public void apply(Layer layer, int color, int x, int y) throws Exception;
+    public void apply(Layer layer, int color, int x, int y) throws Exception{
+        int[][] image = layer.getPixels();
+        double[][] mask = getMask();
 
-    public double[][] getMask() throws Exception;
+        int[][] result = fullConvolution(image, mask);
+        
+        for (int yi = 0; yi < result.length; yi++) {
+            for (int xi = 0; xi < result[0].length; xi++) {
+                result[yi][xi] = convolution(image, mask, xi, yi, BorderSolution.PAD_WITH_CONSTANT);
+            }
+        }
+
+        for (int yi = 0; yi < result.length; yi++) {
+            for (int xi = 0; xi < result[0].length; xi++) {
+                layer.setPixel(xi, yi, result[yi][xi]);
+            }
+        }
+    }
+
+    public abstract double[][] getMask() throws Exception;
 
 }

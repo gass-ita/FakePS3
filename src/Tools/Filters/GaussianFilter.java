@@ -4,7 +4,7 @@ import Layer.Layer;
 import Tools.LinearFilter;
 
 
-public class GaussianFilter implements LinearFilter {
+public class GaussianFilter extends LinearFilter {
 
     /* DEFAULT VARIABLES */
     private static final double DEFAULT_SIGMA = 3;
@@ -12,21 +12,6 @@ public class GaussianFilter implements LinearFilter {
 
     // size = 2*pi*sigma
     private int size = (int) Math.round(2 * (int) Math.PI * sigma);
-
-
-    @Override
-    public void apply(Layer layer, int color, int x, int y) throws Exception {
-        int[][] image = layer.getPixels();
-        double[][] mask = getMask();
-
-        int[][] result = LinearFilter.fullConvolution(image, mask);
-
-        for (int yi = 0; yi < result.length; yi++) {
-            for (int xi = 0; xi < result[0].length; xi++) {
-                layer.setPixel(xi, yi, result[yi][xi]);
-            }
-        }
-    }
 
     @Override
     public double[][] getMask() {

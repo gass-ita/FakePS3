@@ -72,8 +72,8 @@ public class App {
         manager.toolUsed(brush2, 300, 300); */
         
 
-        LaplacianFilter impulse = new LaplacianFilter();
-        impulse.setSize(5);
+        GaussianFilter impulse = new GaussianFilter();
+        /* impulse.setSize(5); */
         manager.toolUsed(impulse, 0, 0);
         editor.repaint();
 
