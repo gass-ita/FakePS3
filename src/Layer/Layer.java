@@ -17,7 +17,7 @@ public class Layer {
     
     final static int DEFAULT_WIDTH = 800;
     final static int DEFAULT_HEIGHT = 800;
-    final static Color DEFAULT_BG_COLOR = new Color(255, 255, 255, 0);
+    final static Color DEFAULT_BG_COLOR = new Color(0, 0, 0, 0);
     final static String DEFAULT_LABEL = "New Layer";
     final static boolean DEFAULT_VISIBILITY = true;
     final static double DEFAULT_OPACITY = 1.0;
@@ -298,6 +298,23 @@ public class Layer {
                     layer.image.setRGB(x, y, current_image.getRGB(x, y));
                 }
             }
+
+            int max_width = Math.max(current_image.getWidth(), width);
+            int max_height = Math.max(current_image.getHeight(), height);
+
+            /* set the other pixel values to the default bg value */
+            for (int x = min_width; x < max_width; x++){
+                for (int y = 0; y < max_height; y++){
+                    layer.image.setRGB(x, y, ColorConverter.argbToHex(DEFAULT_BG_COLOR.getAlpha(), DEFAULT_BG_COLOR.getRed(), DEFAULT_BG_COLOR.getGreen(), DEFAULT_BG_COLOR.getBlue()));
+                }
+            }
+
+            for (int x = 0; x < max_width; x++){
+                for (int y = min_height; y < max_height; y++){
+                    layer.image.setRGB(x, y, ColorConverter.argbToHex(DEFAULT_BG_COLOR.getAlpha(), DEFAULT_BG_COLOR.getRed(), DEFAULT_BG_COLOR.getGreen(), DEFAULT_BG_COLOR.getBlue()));
+                }
+            }
+
         }     
         // Import the modified image into the Layer object
         layer.importImage(layer.image);
