@@ -20,7 +20,7 @@ public interface LinearFilter extends Tool {
 
         for (int y = 0; y < image.length; y++) {
             for (int x = 0; x < image[0].length; x++) {
-                result[y][x] = convolution(image, mask, x, y, BorderSolution.PAD_WITH_REFLECTION);
+                result[y][x] = convolution(image, mask, x, y, BorderSolution.PAD_WITH_CONSTANT);
             }
         }
         long endTime = System.nanoTime();
@@ -30,86 +30,19 @@ public interface LinearFilter extends Tool {
 
     }
 
-    public static int convolution(int[][] image, double[][] mask, int x, int y, BorderSolution borderSolution)
-            throws Exception {
+    public static int convolution(int[][] image, double[][] mask, int x, int y, BorderSolution borderSolution) throws Exception {
+
         if (x < 0 || x >= image[0].length || y < 0 || y >= image.length) {
-            Debugger.err("x or y out of bounds");
-            throw new IllegalArgumentException("x or y out of bounds");
+            Debugger.err("x or y out of bounds of the image");
+            throw new IllegalArgumentException("x or y out of bounds of the image");
         }
 
-        int[][] c_image = new int[mask.length][mask[0].length];
+        if (borderSolution == BorderSolution.IGNORE_BORDER)
+            if (x < mask[0].length / 2 || y < mask.length / 2 || x >= (image[0].length - mask[0].length / 2)
+                    || y >= (image.length - mask.length / 2))
+                return image[y][x];
 
-        /*
-         * if x, y locate on a dangerous position, for example if the mask is 5x5 then
-         * 
-         */
-        if (x < mask[0].length / 2 || y < mask.length / 2 || x >= (image[0].length - mask[0].length / 2)
-                || y >= (image.length - mask.length / 2)) {
-
-            /* copy the interested part of the image into the c_image */
-            switch (borderSolution) {
-                case IGNORE_BORDER:
-                    return image[y][x];
-                case PAD_WITH_CONSTANT:
-
-                    /*
-                     * put the image[y + yi - mask.length / 2][x + xi - mask[0].length / 2] where is
-                     * possible, otherwise put 0
-                     */
-                    for (int yi = 0; yi < mask.length; yi++) {
-                        for (int xi = 0; xi < mask[0].length; xi++) {
-                            int x_index = x + xi - mask[0].length / 2;
-                            int y_index = y + yi - mask.length / 2;
-                            if (x_index < 0 || x_index >= image[0].length || y_index < 0
-                                    || y_index >= image.length) {
-                                c_image[yi][xi] = 0;
-                            } else {
-                                c_image[yi][xi] = image[y_index][x_index];
-                            }
-                        }
-                    }
-                    break;
-                case PAD_WITH_REFLECTION:
-
-                    /*
-                     * put the image[y + yi - mask.length / 2][x + xi - mask[0].length / 2] where is
-                     * possible, otherwise put the reflected value
-                     */
-                    for (int yi = 0; yi < mask.length; yi++) {
-                        for (int xi = 0; xi < mask[0].length; xi++) {
-                            int x_index = x + xi - mask[0].length / 2;
-                            int y_index = y + yi - mask.length / 2;
-                            if (x_index < 0 || x_index >= image[0].length || y_index < 0
-                                    || y_index >= image.length) {
-                                /* reflect the index */
-                                if (x_index < 0) {
-                                    x_index = -x_index;
-                                }
-                                if (x_index >= image[0].length) {
-                                    x_index = 2 * image[0].length - x_index - 1;
-                                }
-                                if (y_index < 0) {
-                                    y_index = -y_index;
-                                }
-                                if (y_index >= image.length) {
-                                    y_index = 2 * image.length - y_index - 1;
-                                }
-                                c_image[yi][xi] = image[y_index][x_index];
-                            } else {
-                                c_image[yi][xi] = image[y_index][x_index];
-                            }
-                        }
-                    }
-                    break;
-            }
-        } else {
-            /* copy the interested part of the image into the c_image */
-            for (int yi = 0; yi < mask.length; yi++) {
-                for (int xi = 0; xi < mask[0].length; xi++) {
-                    c_image[yi][xi] = image[y + yi - mask.length / 2][x + xi - mask[0].length / 2];
-                }
-            }
-        }
+        int[][] c_image = generate_c_image(image, x, y, mask[0].length, mask.length, borderSolution);
 
         double red = 0;
         double green = 0;
@@ -146,6 +79,84 @@ public interface LinearFilter extends Tool {
 
         return newColor;
 
+    }
+
+    public static int[][] generate_c_image(int[][] image, int x, int y, int maskW, int maskH,
+            BorderSolution borderSolution) {
+        int[][] c_image = new int[maskH][maskW];
+        /*
+         * if x, y locate on a dangerous position, for example if the mask is 5x5 then
+         * the dangerous positions are (0,0), (0,1), (0,2), (0,3), (0,4), (1,0), (2,0),
+         */
+        if (x < maskW / 2 || y < maskH / 2 || x >= (image[0].length - maskW / 2)
+                || y >= (image.length - maskH / 2)) {
+
+            /* copy the interested part of the image into the c_image */
+            switch (borderSolution) {
+                case IGNORE_BORDER:
+                    throw new IllegalArgumentException("border solution must be different than IGNORE_BORDER");
+                case PAD_WITH_CONSTANT:
+                    /*
+                     * put the image[y + yi - mask.length / 2][x + xi - mask[0].length / 2] where is
+                     * possible, otherwise put 0
+                     */
+                    for (int yi = 0; yi < maskH; yi++) {
+                        for (int xi = 0; xi < maskW; xi++) {
+                            int x_index = x + xi - maskW / 2;
+                            int y_index = y + yi - maskH / 2;
+                            if (x_index < 0 || x_index >= image[0].length || y_index < 0
+                                    || y_index >= image.length) {
+                                c_image[yi][xi] = 0;
+                            } else {
+                                c_image[yi][xi] = image[y_index][x_index];
+                            }
+                        }
+                    }
+                    break;
+                case PAD_WITH_REFLECTION:
+
+                    /*
+                     * put the image[y + yi - mask.length / 2][x + xi - mask[0].length / 2] where is
+                     * possible, otherwise put the reflected value
+                     */
+                    for (int yi = 0; yi < maskH; yi++) {
+                        for (int xi = 0; xi < maskW; xi++) {
+                            int x_index = x + xi - maskW / 2;
+                            int y_index = y + yi - maskH / 2;
+                            if (x_index < 0 || x_index >= image[0].length || y_index < 0
+                                    || y_index >= image.length) {
+                                /* reflect the index */
+                                if (x_index < 0) {
+                                    x_index = -x_index;
+                                }
+                                if (x_index >= image[0].length) {
+                                    x_index = 2 * image[0].length - x_index - 1;
+                                }
+                                if (y_index < 0) {
+                                    y_index = -y_index;
+                                }
+                                if (y_index >= image.length) {
+                                    y_index = 2 * image.length - y_index - 1;
+                                }
+                                c_image[yi][xi] = image[y_index][x_index];
+                            } else {
+                                c_image[yi][xi] = image[y_index][x_index];
+                            }
+                        }
+                    }
+                    break;
+
+            }
+        } else {
+            /* copy the interested part of the image into the c_image */
+            for (int yi = 0; yi < maskH; yi++) {
+                for (int xi = 0; xi < maskW; xi++) {
+                    c_image[yi][xi] = image[y + yi - maskH / 2][x + xi - maskW / 2];
+                }
+            }
+        }
+
+        return c_image;
     }
 
     public static void saveMaskToText(double[][] mask, String filename) {
