@@ -1,16 +1,16 @@
 package Tools.Filters;
 
 import Layer.Layer;
-import Tools.Filter;
+import Tools.LinearFilter;
 
-public class ImpulseFilter implements Filter{
+public class ImpulseFilter implements LinearFilter{
 
     /* DEFAULT VARIABLES */
     public static final int DEFAULT_SIZE = 3;
 
     private int size = DEFAULT_SIZE;
 
-    public double[][] getMask(int[][] image, int x, int y){
+    public double[][] getMask(){
         double[][] mask = new double[size][size];
         /* the center will be 1 */
         mask[size/2][size/2] = 1;
@@ -20,8 +20,8 @@ public class ImpulseFilter implements Filter{
     @Override
     public void apply(Layer layer, int color, int x, int y) throws Exception {
         int[][] image = layer.getPixels();
-        double[][] mask = getMask(image, x, y);
-        int[][] result = Filter.fullConvolution(image, mask);
+        double[][] mask = getMask();
+        int[][] result = LinearFilter.fullConvolution(image, mask);
 
         for (int yi = 0; yi < result.length; yi++) {
             for (int xi = 0; xi < result[0].length; xi++) {

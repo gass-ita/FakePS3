@@ -10,7 +10,7 @@ import Tools.Filters.BorderSolution;
 import Utils.ColorConverter;
 import Utils.Debugger;
 
-public interface Filter extends Tool {
+public interface LinearFilter extends Tool {
 
     static int[][] fullConvolution(int[][] image, double[][] mask) throws Exception {
         Debugger.log("Full convolution");
@@ -217,6 +217,6 @@ public interface Filter extends Tool {
     @Override
     public void apply(Layer layer, int color, int x, int y) throws Exception;
 
-    public double[][] getMask(int[][] image, int x, int y) throws Exception;
+    public double[][] getMask() throws Exception;
 
 }

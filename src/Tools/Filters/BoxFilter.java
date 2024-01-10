@@ -1,15 +1,15 @@
 package Tools.Filters;
 
 import Layer.Layer;
-import Tools.Filter;
+import Tools.LinearFilter;
 
-public class BoxFilter implements Filter{
+public class BoxFilter implements LinearFilter{
     /* DEFAULT VARIABLES */
     public static final int DEFAULT_SIZE = 5;
 
     private int size = DEFAULT_SIZE;
     
-    public double[][] getMask(int[][] image, int x, int y){
+    public double[][] getMask(){
         double[][] mask = new double[size][size];
         /* fill the mask except the borders */
         for (int yi = 1; yi < size-1; yi++) {
@@ -23,8 +23,8 @@ public class BoxFilter implements Filter{
     @Override
     public void apply(Layer layer, int color, int x, int y) throws Exception {
         int[][] image = layer.getPixels();
-        double[][] mask = getMask(image, x, y);
-        int[][] result = Filter.fullConvolution(image, mask);
+        double[][] mask = getMask();
+        int[][] result = LinearFilter.fullConvolution(image, mask);
 
         for (int yi = 0; yi < result.length; yi++) {
             for (int xi = 0; xi < result[0].length; xi++) {

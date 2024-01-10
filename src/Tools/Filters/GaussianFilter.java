@@ -1,10 +1,10 @@
 package Tools.Filters;
 
 import Layer.Layer;
-import Tools.Filter;
+import Tools.LinearFilter;
 
 
-public class GaussianFilter implements Filter {
+public class GaussianFilter implements LinearFilter {
 
     /* DEFAULT VARIABLES */
     private static final double DEFAULT_SIGMA = 3;
@@ -17,9 +17,9 @@ public class GaussianFilter implements Filter {
     @Override
     public void apply(Layer layer, int color, int x, int y) throws Exception {
         int[][] image = layer.getPixels();
-        double[][] mask = getMask(image, x, y);
+        double[][] mask = getMask();
 
-        int[][] result = Filter.fullConvolution(image, mask);
+        int[][] result = LinearFilter.fullConvolution(image, mask);
 
         for (int yi = 0; yi < result.length; yi++) {
             for (int xi = 0; xi < result[0].length; xi++) {
@@ -29,7 +29,7 @@ public class GaussianFilter implements Filter {
     }
 
     @Override
-    public double[][] getMask(int[][] image, int x, int y) {
+    public double[][] getMask() {
         double sigma = getSigma();
         int size = getSize();
         
@@ -52,7 +52,7 @@ public class GaussianFilter implements Filter {
                 mask[yi][xi] /= sum;
             }
         }
-        Filter.saveMaskToImage(mask, "test.png");
+        LinearFilter.saveMaskToImage(mask, "test.png");
         return mask;
 
     }
