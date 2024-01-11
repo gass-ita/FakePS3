@@ -9,6 +9,9 @@ public abstract class NonLinearFilter extends LinearFilter {
     @Override
     public  void apply(Layer layer, int color, int x, int y) throws Exception{
         Debugger.log("Applying non linear filter");
+
+        long startTime = System.nanoTime();
+
         int[][] image = layer.getPixels();
         int[][] result = applyFilter(layer, color, x, y);
         
@@ -17,7 +20,10 @@ public abstract class NonLinearFilter extends LinearFilter {
                 image[yi][xi] = result[yi][xi];
             }
         }
-        Debugger.log("Applied non linear filter");
+
+        long endTime = System.nanoTime();
+
+        Debugger.log("Applied non linear filter in " + ((endTime - startTime) / 1000000) + " ms");
     }
 
     public abstract int[][] applyFilter(Layer layer, int color, int x, int y) throws Exception;

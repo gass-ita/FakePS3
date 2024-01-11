@@ -301,19 +301,32 @@ public class Layer {
             int max_width = Math.max(current_image.getWidth(), width);
             int max_height = Math.max(current_image.getHeight(), height);
 
-            /* set the other pixel values to the default bg value */
-            for (int x = min_width; x < max_width; x++){
-                for (int y = 0; y < max_height; y++){
-                    layer.image.setRGB(x, y, ColorConverter.argbToHex(DEFAULT_BG_COLOR.getAlpha(), DEFAULT_BG_COLOR.getRed(), DEFAULT_BG_COLOR.getGreen(), DEFAULT_BG_COLOR.getBlue()));
+            Debugger.log(current_image.getWidth() + " " + current_image.getHeight() + " " + width + " " + height + " " + min_width + " " + min_height + " " + max_width + " " + max_height);
+
+            /* check if its needed to add the border pixels */
+            if (width >= max_width || height >= max_height){
+                Debugger.log("need to add the border pixels");
+                /* set the other pixel values to the default bg value */
+                for (int x = min_width; x < max_width; x++){
+                    for (int y = 0; y < max_height; y++){
+                        if (x < current_image.getWidth() && y < current_image.getHeight()){
+                            continue;
+                        } else {
+                            layer.image.setRGB(x, y, ColorConverter.argbToHex(DEFAULT_BG_COLOR.getAlpha(), DEFAULT_BG_COLOR.getRed(), DEFAULT_BG_COLOR.getGreen(), DEFAULT_BG_COLOR.getBlue()));
+                        }
+                    }
+                }
+
+                for (int x = 0; x < max_width; x++){
+                    for (int y = min_height; y < max_height; y++){
+                        if (x < current_image.getWidth() && y < current_image.getHeight()){
+                            continue;
+                        } else {
+                            layer.image.setRGB(x, y, ColorConverter.argbToHex(DEFAULT_BG_COLOR.getAlpha(), DEFAULT_BG_COLOR.getRed(), DEFAULT_BG_COLOR.getGreen(), DEFAULT_BG_COLOR.getBlue()));
+                        }
+                    }
                 }
             }
-
-            for (int x = 0; x < max_width; x++){
-                for (int y = min_height; y < max_height; y++){
-                    layer.image.setRGB(x, y, ColorConverter.argbToHex(DEFAULT_BG_COLOR.getAlpha(), DEFAULT_BG_COLOR.getRed(), DEFAULT_BG_COLOR.getGreen(), DEFAULT_BG_COLOR.getBlue()));
-                }
-            }
-
         }     
         // Import the modified image into the Layer object
         layer.importImage(layer.image);
