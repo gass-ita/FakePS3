@@ -8,6 +8,8 @@ public class LaplacianFilter extends LinearFilter {
 
     private int size = DEFAULT_SIZE;
 
+    private String name = "Laplacian Filter";
+
     @Override
     public double[][] getMask() {
         /* Shift and subtract */
@@ -23,5 +25,14 @@ public class LaplacianFilter extends LinearFilter {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public String setName() {
+        return name;
     }
 }

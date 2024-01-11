@@ -1,10 +1,5 @@
 package Tools;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-
-import javax.imageio.ImageIO;
-
 import Layer.Layer;
 import Tools.Filters.BorderSolution;
 import Utils.ColorConverter;
@@ -12,11 +7,7 @@ import Utils.Debugger;
 
 public abstract class LinearFilter implements Tool {
 
-    protected static int[][] fullConvolution(int[][] image, double[][] mask) throws Exception {
-        Debugger.log("Full convolution");
-        
-        long startTime = System.nanoTime();
-
+    protected static int[][] applyFilter(int[][] image, double[][] mask) throws Exception {
         int[][] result = new int[image.length][image[0].length];
 
         for (int y = 0; y < image.length; y++) {
@@ -24,10 +15,6 @@ public abstract class LinearFilter implements Tool {
                 result[y][x] = convolution(image, mask, x, y, BorderSolution.PAD_WITH_CONSTANT);
             }
         }
-        
-        long endTime = System.nanoTime();
-
-        Debugger.log("Finished convolution in: " + ((endTime - startTime) / 1000000) + " ms");
 
         return result;
 
@@ -162,87 +149,46 @@ public abstract class LinearFilter implements Tool {
         return c_image;
     }
 
-    public static void saveMaskToText(double[][] mask, String filename) {
-        File outputfile = new File(filename);
-        try {
-            outputfile.createNewFile();
-            Debugger.log("Created file");
-        } catch (Exception e) {
-            Debugger.log("Could not create file");
-        }
-
-        /* save to txt the matrix */
-        try {
-            String content = "";
-            for (int i = 0; i < mask.length; i++) {
-                for (int j = 0; j < mask[0].length; j++) {
-                    content += mask[i][j] + " ";
-                }
-                content += "\n";
-            }
-            Debugger.log("Content: " + content);
-            java.io.FileWriter fw = new java.io.FileWriter(outputfile);
-            fw.write(content);
-            fw.close();
-        } catch (Exception e) {
-            Debugger.log("Could not write to file");
-        }
-
-    }
-
-    public static void saveMaskToImage(double[][] mask, String filename) {
-        BufferedImage image = new BufferedImage(mask[0].length, mask.length, BufferedImage.TYPE_INT_RGB);
-
-
-        /* find the minimum and map it to black and the maximum to white */
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-
-        for (int i = 0; i < mask.length; i++) {
-            for (int j = 0; j < mask[0].length; j++) {
-                min = Math.min(min, mask[i][j]);
-                max = Math.max(max, mask[i][j]);
-            }
-        }
-
-        Debugger.log("Min: " + min + " Max: " + max);
-
-        /* map the values to 0-255 */
-        for (int i = 0; i < mask.length; i++) {
-            for (int j = 0; j < mask[0].length; j++) {
-                double value = mask[i][j];
-                value = (value - min) / (max - min);
-                int color = (int) Math.round(value * 255);
-                image.setRGB(j, i, (color << 16) | (color << 8) | color);
-            }
-        }
-
-        /* save the image */
-        File outputFile = new File(filename);
-        try {
-            ImageIO.write(image, "png", outputFile);
-        } catch (Exception e) {
-            Debugger.log("Could not write to file");
-        }
-
-        Debugger.log("Saved image");
-
-    }
 
     @Override
     public void apply(Layer layer, int color, int x, int y) throws Exception{
+        Debugger.log("Applying " + getName() + "...");
+
+        long startTime = System.nanoTime();
+
         int[][] image = layer.getPixels();
         double[][] mask = getMask();
 
-        int[][] result = fullConvolution(image, mask);
-
+        int[][] result = applyFilter(image, mask);
+        long endTime = System.nanoTime();
+        Debugger.log("Done in " + ((endTime - startTime) / 1000000) + " ms" +"! Applying the result to the layer...");
+        
+        startTime = System.nanoTime();
         for (int yi = 0; yi < result.length; yi++) {
             for (int xi = 0; xi < result[0].length; xi++) {
                 layer.setPixel(xi, yi, result[yi][xi]);
             }
         }
+        endTime = System.nanoTime();
+
+        
+
+        Debugger.log("Applied " + getName() + " in " + ((endTime - startTime) / 1000000) + " ms");
     }
 
     public abstract double[][] getMask() throws Exception;
+
+    public String setName(){
+        throw new UnsupportedOperationException("This linear filter doesn't have a name");
+    }
+
+    public String getName(){
+        try {
+            return setName();
+        } catch (UnsupportedOperationException e) {
+            Debugger.warn("This linear filter doesn't have a name, to set it override the method setName()");
+            return "Unknown linear filter";
+        }
+    }
 
 }

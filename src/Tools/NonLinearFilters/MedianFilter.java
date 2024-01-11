@@ -14,6 +14,8 @@ public class MedianFilter extends NonLinearFilter{
 
     private int size = DEFAULT_SIZE;
 
+    private String name = "Median Filter";
+
     @Override
     public int[][] applyFilter(Layer layer, int color, int x, int y) throws Exception {
         int[][] image = layer.getPixels();
@@ -78,6 +80,11 @@ public class MedianFilter extends NonLinearFilter{
             median = sorted[sorted.length / 2];
         }
         return median;
+    }
+
+    @Override
+    public String setName() {
+        return name;
     }
     
 }

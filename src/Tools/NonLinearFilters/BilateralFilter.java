@@ -21,6 +21,8 @@ public class BilateralFilter extends NonLinearFilter {
     private double[][] gaussian_s;
     private double[][] gaussian_b;
 
+    private String name = "Bilateral Filter";
+
     public BilateralFilter() {
         super();
         if (size_s % 2 == 0)
@@ -128,6 +130,11 @@ public class BilateralFilter extends NonLinearFilter {
                 | (int) newBlue;
 
         return newColor;
+    }
+
+    @Override
+    public String setName() {
+        return name;
     }
 
    

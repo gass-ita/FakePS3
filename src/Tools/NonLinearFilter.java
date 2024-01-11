@@ -6,32 +6,50 @@ import Utils.Debugger;
 
 public abstract class NonLinearFilter extends LinearFilter {
 
+
     @Override
     public  void apply(Layer layer, int color, int x, int y) throws Exception{
-        Debugger.log("Applying non linear filter");
+        
+        Debugger.log("Applying " + getName() + "...");
 
         long startTime = System.nanoTime();
 
         int[][] image = layer.getPixels();
         int[][] result = applyFilter(layer, color, x, y);
+
+        long endTime = System.nanoTime();
+        Debugger.log("Done in " + ((endTime - startTime) / 1000000) + " ms" +"! Applying the result to the layer...");
         
+        startTime = System.nanoTime();
         for (int yi = 0; yi < image.length; yi++) {
             for (int xi = 0; xi < image[0].length; xi++) {
                 image[yi][xi] = result[yi][xi];
             }
         }
+        endTime = System.nanoTime();
 
-        long endTime = System.nanoTime();
 
-        Debugger.log("Applied non linear filter in " + ((endTime - startTime) / 1000000) + " ms");
+        Debugger.log("Applied " + getName() + " in " + ((endTime - startTime) / 1000000) + " ms");
     }
 
     public abstract int[][] applyFilter(Layer layer, int color, int x, int y) throws Exception;
 
     public abstract int convolution(int[][] image, int size, int x, int y, BorderSolution borderSolution) throws Exception;
 
-    public  double[][] getMask() throws Exception{
-        throw new UnsupportedOperationException("non linear filters don't fixed have masks");
+    @Override
+    public String getName(){
+        try {
+            return setName();
+        } catch (UnsupportedOperationException e) {
+            Debugger.warn("This non linear filter doesn't have a name, to set it override the method setName()");
+            return "unknown non linear filter";
+        }
     }
+
+    public  double[][] getMask() throws Exception{
+        throw new UnsupportedOperationException(getName() + " don't fixed have masks");
+    }
+
+
     
 }

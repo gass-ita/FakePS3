@@ -8,6 +8,8 @@ public class GaussianFilter extends LinearFilter {
     private static final double DEFAULT_SIGMA = 5;
     private double sigma = DEFAULT_SIGMA;
 
+    private String name = "Gaussian Filter";
+
     // size = 2*pi*sigma
     private int size = (int) Math.round(2 * (int) Math.PI * sigma);
 
@@ -23,7 +25,6 @@ public class GaussianFilter extends LinearFilter {
         int size = getSize();
         
         double[][] mask = generateGaussian(sigma, size);
-        LinearFilter.saveMaskToImage(mask, "test.png");
         return mask;
     }
 
@@ -41,15 +42,11 @@ public class GaussianFilter extends LinearFilter {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                // Calculate distance from the center
-                double distance = Math.pow(i - centerX, 2) + Math.pow(j - centerY, 2);
-                
-                // Calculate Gaussian value
-                double gaussianValue = Math.exp(-distance / (2 * Math.pow(sigma, 2)));
-
-                // Assign the Gaussian value to the matrix
-                gaussianMatrix[i][j] = gaussianValue;
-                sum += gaussianValue;
+                    
+                    gaussianMatrix[i][j] = Math.exp(-((i - centerX) * (i - centerX) + (j - centerY) * (j - centerY))
+                            / (2 * sigma * sigma));
+    
+                    sum += gaussianMatrix[i][j];
             }
         }
 
@@ -74,6 +71,11 @@ public class GaussianFilter extends LinearFilter {
 
     public int getSize() {
         return size;
+    }
+
+    @Override
+    public String setName() {
+        return name;
     }
 
 }

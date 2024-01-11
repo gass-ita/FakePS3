@@ -37,7 +37,7 @@ public class BetterBrush extends Brush {
     @Override
     public void apply(Layer layer, int color, int x, int y) {
         // paint with the color using the brush mask
-        Debugger.log("Applying brush " + "brushMask.length: " + brushMask.length + " brushMask[0].length: " + brushMask[0].length);
+        Debugger.log("Applying brush " + "brushMask.length: " + brushMask.length + " brushMask[0].length: " + brushMask[0].length + " at (" + x + ", " + y + ")");
         for (int i = 0; i < brushMask.length; i++) {
             for (int j = 0; j < brushMask.length; j++) {
                 if (brushMask[i][j] != 0) {

@@ -7,6 +7,8 @@ public class BoxFilter extends LinearFilter{
     public static final int DEFAULT_SIZE = 5;
 
     private int size = DEFAULT_SIZE;
+    private String name = "Box Filter";
+
     
     public double[][] getMask(){
         double[][] mask = new double[size][size];
@@ -18,4 +20,11 @@ public class BoxFilter extends LinearFilter{
         }
         return mask;
     }
+
+    @Override
+    public String setName() {
+        return name;
+    }
+
+    
 }

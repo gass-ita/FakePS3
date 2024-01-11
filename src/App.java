@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 
 import Layer.Layer;
 import Layer.LayerManager;
+import Tools.LinearFilter;
+import Tools.NonLinearFilter;
 import Tools.Brush.BetterBrush;
 import Tools.Brush.Brush;
 import Tools.Eraser.BetterEraser;
