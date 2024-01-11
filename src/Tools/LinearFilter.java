@@ -235,12 +235,6 @@ public abstract class LinearFilter implements Tool {
         double[][] mask = getMask();
 
         int[][] result = fullConvolution(image, mask);
-        
-        for (int yi = 0; yi < result.length; yi++) {
-            for (int xi = 0; xi < result[0].length; xi++) {
-                result[yi][xi] = convolution(image, mask, xi, yi, BorderSolution.PAD_WITH_CONSTANT);
-            }
-        }
 
         for (int yi = 0; yi < result.length; yi++) {
             for (int xi = 0; xi < result[0].length; xi++) {
