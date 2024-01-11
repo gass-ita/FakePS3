@@ -191,7 +191,8 @@ public abstract class LinearFilter implements Tool {
     }
 
     public static void saveMaskToImage(double[][] mask, String filename) {
-        BufferedImage image = new BufferedImage(mask.length, mask[0].length, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(mask[0].length, mask.length, BufferedImage.TYPE_INT_RGB);
+
 
         /* find the minimum and map it to black and the maximum to white */
         double min = Double.MAX_VALUE;
@@ -212,7 +213,7 @@ public abstract class LinearFilter implements Tool {
                 double value = mask[i][j];
                 value = (value - min) / (max - min);
                 int color = (int) Math.round(value * 255);
-                image.setRGB(i, j, (color << 16) | (color << 8) | color);
+                image.setRGB(j, i, (color << 16) | (color << 8) | color);
             }
         }
 
