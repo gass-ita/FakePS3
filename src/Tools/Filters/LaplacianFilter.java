@@ -1,6 +1,5 @@
 package Tools.Filters;
 
-import Layer.Layer;
 import Tools.LinearFilter;
 
 public class LaplacianFilter extends LinearFilter {

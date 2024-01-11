@@ -1,6 +1,5 @@
 package Tools.Filters;
 
-import Layer.Layer;
 import Tools.LinearFilter;
 
 public class GaussianFilter extends LinearFilter {
@@ -28,7 +27,7 @@ public class GaussianFilter extends LinearFilter {
         return mask;
     }
 
-    private static double[][] generateGaussian(double sigma, int size) {
+    public static double[][] generateGaussian(double sigma, int size) {
         if (size % 2 == 0)
             size++;
             

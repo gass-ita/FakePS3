@@ -8,6 +8,8 @@ FakePS3 is a Java-based image editor that allows users to create and manipulate 
 - Adjust layer opacity and color channels
 - Apply layer blending modes
 - Export images as PNG files
+- Apply linear filters
+- applay non linear filters
 
 <!-- ## Installation
 

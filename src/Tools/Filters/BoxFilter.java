@@ -1,6 +1,5 @@
 package Tools.Filters;
 
-import Layer.Layer;
 import Tools.LinearFilter;
 
 public class BoxFilter extends LinearFilter{
