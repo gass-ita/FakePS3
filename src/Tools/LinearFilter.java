@@ -7,6 +7,27 @@ import Utils.Debugger;
 
 public abstract class LinearFilter implements Tool {
 
+    /**
+     * Applies a convolution filter to an entire image using a specified mask
+     * (kernel).
+     * The convolution operation is performed on each pixel of the image, producing
+     * a new filtered image.
+     * Border handling is managed by padding with a constant value.
+     *
+     * <p>
+     * Each pixel in the output image is calculated using the convolution method:
+     * </p>
+     * 
+     * <pre>
+     * result[y][x] = convolution(image, mask, x, y, BorderSolution.PAD_WITH_CONSTANT);
+     * </pre>
+     *
+     * @param image The original 2D array representing the image to be filtered.
+     * @param mask  The convolution mask (or kernel), a 2D array of doubles used for
+     *              filtering.
+     * @return A new 2D array representing the filtered image.
+     * @throws Exception If an error occurs during the convolution process.
+     */
     protected static int[][] applyFilter(int[][] image, double[][] mask) throws Exception {
         int[][] result = new int[image.length][image[0].length];
 
@@ -20,7 +41,38 @@ public abstract class LinearFilter implements Tool {
 
     }
 
-    public static int convolution(int[][] image, double[][] mask, int x, int y, BorderSolution borderSolution) throws Exception {
+    /**
+     * Applies a convolution operation to a specific pixel in the image using a
+     * given mask.
+     * The convolution operation takes into account different border solutions when
+     * the mask
+     * extends beyond the image boundaries.
+     *
+     * <p>
+     * Mathematical notation for discrete convolution:
+     * </p>
+     * 
+     * <pre>
+     * Convolution result at (x, y) = Σ Σ (image[y + i][x + j] * mask[maskH - 1 - i][maskW - 1 - j])
+     * where the summation is over the dimensions of the mask.
+     * </pre>
+     *
+     * @param image          The original 2D array representing the image.
+     * @param mask           The convolution mask (or kernel), a 2D array of
+     *                       doubles.
+     * @param x              The x-coordinate of the central pixel around which the
+     *                       convolution is applied.
+     * @param y              The y-coordinate of the central pixel around which the
+     *                       convolution is applied.
+     * @param borderSolution The solution for handling borders when the mask extends
+     *                       beyond the image boundaries.
+     * @return The new color value for the pixel at (x, y) after applying the
+     *         convolution.
+     * @throws IllegalArgumentException if the (x, y) coordinates are out of bounds
+     *                                  of the image.
+     */
+    public static int convolution(int[][] image, double[][] mask, int x, int y, BorderSolution borderSolution)
+            throws Exception {
 
         if (x < 0 || x >= image[0].length || y < 0 || y >= image.length) {
             Debugger.err("x or y out of bounds of the image");
@@ -71,6 +123,25 @@ public abstract class LinearFilter implements Tool {
 
     }
 
+    /**
+     * Generates a sub-image (c_image) centered around a specific pixel (x, y) from
+     * the input image.
+     * The sub-image has the dimensions specified by the mask width (maskW) and
+     * height (maskH).
+     * Border cases are handled based on the provided BorderSolution.
+     *
+     * @param image          The original 2D array representing the image.
+     * @param x              The x-coordinate of the central pixel around which the
+     *                       sub-image is to be generated.
+     * @param y              The y-coordinate of the central pixel around which the
+     *                       sub-image is to be generated.
+     * @param maskW          The width of the mask/sub-image.
+     * @param maskH          The height of the mask/sub-image.
+     * @param borderSolution The solution for handling borders when the mask extends
+     *                       beyond the image boundaries.
+     * @return A 2D array representing the generated sub-image.
+     * @throws IllegalArgumentException if the border solution is IGNORE_BORDER.
+     */
     public static int[][] generate_c_image(int[][] image, int x, int y, int maskW, int maskH,
             BorderSolution borderSolution) {
         int[][] c_image = new int[maskH][maskW];
@@ -149,9 +220,8 @@ public abstract class LinearFilter implements Tool {
         return c_image;
     }
 
-
     @Override
-    public void apply(Layer layer, int color, int x, int y) throws Exception{
+    public void apply(Layer layer, int color, int x, int y) throws Exception {
         Debugger.log("Applying " + getName() + "...");
 
         long startTime = System.nanoTime();
@@ -161,8 +231,8 @@ public abstract class LinearFilter implements Tool {
 
         int[][] result = applyFilter(image, mask);
         long endTime = System.nanoTime();
-        Debugger.log("Done in " + ((endTime - startTime) / 1000000) + " ms" +"! Applying the result to the layer...");
-        
+        Debugger.log("Done in " + ((endTime - startTime) / 1000000) + " ms" + "! Applying the result to the layer...");
+
         startTime = System.nanoTime();
         for (int yi = 0; yi < result.length; yi++) {
             for (int xi = 0; xi < result[0].length; xi++) {
@@ -171,18 +241,16 @@ public abstract class LinearFilter implements Tool {
         }
         endTime = System.nanoTime();
 
-        
-
         Debugger.log("Applied " + getName() + " in " + ((endTime - startTime) / 1000000) + " ms");
     }
 
     public abstract double[][] getMask() throws Exception;
 
-    public String setName(){
+    public String setName() {
         throw new UnsupportedOperationException("This linear filter doesn't have a name");
     }
 
-    public String getName(){
+    public String getName() {
         try {
             return setName();
         } catch (UnsupportedOperationException e) {

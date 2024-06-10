@@ -6,10 +6,9 @@ import Utils.Debugger;
 
 public abstract class NonLinearFilter extends LinearFilter {
 
-
     @Override
-    public  void apply(Layer layer, int color, int x, int y) throws Exception{
-        
+    public void apply(Layer layer, int color, int x, int y) throws Exception {
+
         Debugger.log("Applying " + getName() + "...");
 
         long startTime = System.nanoTime();
@@ -18,8 +17,8 @@ public abstract class NonLinearFilter extends LinearFilter {
         int[][] result = applyFilter(layer, color, x, y);
 
         long endTime = System.nanoTime();
-        Debugger.log("Done in " + ((endTime - startTime) / 1000000) + " ms" +"! Applying the result to the layer...");
-        
+        Debugger.log("Done in " + ((endTime - startTime) / 1000000) + " ms" + "! Applying the result to the layer...");
+
         startTime = System.nanoTime();
         for (int yi = 0; yi < image.length; yi++) {
             for (int xi = 0; xi < image[0].length; xi++) {
@@ -28,16 +27,16 @@ public abstract class NonLinearFilter extends LinearFilter {
         }
         endTime = System.nanoTime();
 
-
         Debugger.log("Applied " + getName() + " in " + ((endTime - startTime) / 1000000) + " ms");
     }
 
     public abstract int[][] applyFilter(Layer layer, int color, int x, int y) throws Exception;
 
-    public abstract int convolution(int[][] image, int size, int x, int y, BorderSolution borderSolution) throws Exception;
+    public abstract int convolution(int[][] image, int size, int x, int y, BorderSolution borderSolution)
+            throws Exception;
 
     @Override
-    public String getName(){
+    public String getName() {
         try {
             return setName();
         } catch (UnsupportedOperationException e) {
@@ -46,10 +45,8 @@ public abstract class NonLinearFilter extends LinearFilter {
         }
     }
 
-    public  double[][] getMask() throws Exception{
+    public double[][] getMask() throws Exception {
         throw new UnsupportedOperationException(getName() + " don't fixed have masks");
     }
 
-
-    
 }
